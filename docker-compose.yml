@@ -1,0 +1,28 @@
+---
+version: '3'
+services:
+   checkmk:
+     image: checkmk/check-mk-raw:2.2.0-latest
+     container_name: checkmk
+     ports:
+       - "162:162/udp"
+       - "514:514/udp"
+       - "514:514/tcp"
+       - "6557:6557/tcp"
+       - "8080:5000/tcp"
+       - "8000:8000/tcp"
+     tmpfs:
+      - /opt/omd/sites/cmk/tmp:uid=1000,gid=1000
+     ulimits:
+      nofile: 1024
+     environment:
+       - MAIL_RELAY_HOST=app1.domain.local
+       - CMK_SITE_ID=cmk
+       - CMK_PASSWORD=Start001
+       - CMK_LIVESTATUS_TCP=on
+     volumes:
+       - /etc/localtime:/etc/localtime:ro
+       - vol-checkmk:/omd/sites
+
+volumes:
+  vol-checkmk:
